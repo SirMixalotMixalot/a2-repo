@@ -31,7 +31,9 @@ Module Program
         Public Sub New(s As String)
             s = s.Trim()
             op = CharacterToOp(s(0))
-            args = s.Substring(1).Trim().Split(" ")
+            If op = Operation.Enque Then
+                args = s.Substring(s.IndexOf(" ")).Trim().Split(" ")
+            End If
             c = s(0)
 
         End Sub
@@ -76,28 +78,34 @@ Module Program
     }
     Sub Main()
         Dim Q As New Queue(Of String)
+
         Console.WriteLine("Enter a comma seperated list of instructions from the list e.g E 4, D, E 3 2 3 11 1 Hello, R")
+        Console.WriteLine("Press Enter or q to quit")
         For Each instruction As String In InstructionDescriptions
             Console.WriteLine(instruction)
         Next
         While True
             Dim instructions = Console.ReadLine()
+            If String.IsNullOrEmpty(instructions) Or instructions(0) = "q" Then
+                Exit While
+            End If
             Dim instructionList = instructions.Split(",")
             Dim commands = instructionList.Select(Function(s) New Command(s))
             For Each command As Command In commands
 
                 Dim errorMessage = command.Exec(Q)
                 If errorMessage <> "" Then
-                    Console.WriteLine(errorMessage)
+                    Console.ForegroundColor = ConsoleColor.DarkRed
+                    Console.WriteLine("Unable to execute command!! ERROR MESSAGE: " + errorMessage)
+                    Console.ResetColor()
                 End If
 
             Next
+
             Console.WriteLine(Q)
-            Console.WriteLine("Enter q to quit")
-            Dim confirmation = Console.ReadLine().Trim()
-            If confirmation.ToLower()(0) = "q" Then
-                Exit While
-            End If
+
+
+
         End While
 
 
@@ -150,12 +158,12 @@ Module Program
             Dim arrowlenrp = Data.Take(RearPointer).Sum(Function(x) x.ToString().Length)
             Dim q As New StringBuilder()
             Dim arrow = ""
-            For i = 0 To arrowlenfp + FrontPointer + 1
+            For i = 0 To arrowlenfp + FrontPointer
                 arrow += "-"
                 '        
             Next
             arrow += "v"
-            q.AppendLine("front pointer")
+            q.AppendLine($"front pointer [{FrontPointer}]")
             q.AppendLine(arrow)
             Dim s = "["
             Dim j = 0
@@ -183,7 +191,7 @@ Module Program
             Next
             arrow += "^"
             q.AppendLine(arrow)
-            q.AppendLine("rear pointer")
+            q.AppendLine($"rear pointer [{RearPointer}]")
             Return q.ToString()
         End Function
     End Class
