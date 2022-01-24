@@ -78,7 +78,9 @@ Module Program
     }
     Sub Main()
         Dim Q As New Queue(Of String)
-
+        Dim top As Integer
+        Dim left As Integer
+        Dim position_set As Boolean = False
         Console.WriteLine("Enter a comma seperated list of instructions from the list e.g E 4, D, E 3 2 3 11 1 Hello, R")
         Console.WriteLine("Press Enter or q to quit")
         For Each instruction As String In InstructionDescriptions
@@ -102,6 +104,13 @@ Module Program
 
             Next
 
+            If position_set Then
+                Console.SetCursorPosition(left, top)
+                Console.Clear()
+            End If
+            top = Console.CursorTop
+            left = Console.CursorLeft
+            position_set = True
             Console.WriteLine(Q)
 
 
