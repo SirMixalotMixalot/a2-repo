@@ -1,4 +1,5 @@
 Imports System
+Imports System.Text
 
 Module Program
     Enum Operation
@@ -27,39 +28,43 @@ Module Program
         Dim c As Char
         Dim op As Operation
         Dim args As String()
-        Public Sub New(o As Char, arg As String())
-            op = CharacterToOp(o)
-            args = arg
-            c = o
+        Public Sub New(s As String)
+            s = s.Trim()
+            op = CharacterToOp(s(0))
+            args = s.Substring(1).Trim().Split(" ")
+            c = s(0)
 
         End Sub
         Public Function Exec(ByRef q As Queue(Of String)) As String
-            Select Case op
-                Case Operation.Enque
-                    Try
+            Try
+                Select Case op
+                    Case Operation.Enque
+
                         For Each arg As String In args
                             q.Enqueue(arg)
                         Next
-                    Catch e As Exception
-                        Return e.Message
-                    End Try
-                Case Operation.Deque
-                    Try
+
+
+
+                    Case Operation.Deque
+
                         q.Dequeue()
-                    Catch e As Exception
-                        Return e.Message
 
-                    End Try
 
-                Case Operation.Reset
-                    Console.WriteLine("Enter the new capacity of the queue")
-                    Dim cap = Integer.Parse(Console.ReadLine())
-                    q = New Queue(Of String)(cap)
-                Case Operation.Err
 
-                    Return $"Unknown command in input '{c}'"
 
-            End Select
+                    Case Operation.Reset
+                        Console.WriteLine("Enter the new capacity of the queue")
+                        Dim cap = Integer.Parse(Console.ReadLine())
+                        q = New Queue(Of String)(cap)
+                    Case Operation.Err
+
+                        Return $"Unknown command in input '{c}'"
+
+                End Select
+            Catch e As Exception
+                Return e.Message
+            End Try
             Return ""
 
         End Function
@@ -75,18 +80,25 @@ Module Program
         For Each instruction As String In InstructionDescriptions
             Console.WriteLine(instruction)
         Next
-        Dim instructions = Console.ReadLine()
-        Dim instructionList = instructions.Split(",")
-        Dim commands = instructionList.Select(Function(s) New Command(s(0), s.Substring(1).Trim().Split(" ")))
-        For Each command As Command In commands
+        While True
+            Dim instructions = Console.ReadLine()
+            Dim instructionList = instructions.Split(",")
+            Dim commands = instructionList.Select(Function(s) New Command(s))
+            For Each command As Command In commands
 
-            Dim errorMessage = command.Exec(Q)
-            If errorMessage <> "" Then
-                Console.WriteLine(errorMessage)
+                Dim errorMessage = command.Exec(Q)
+                If errorMessage <> "" Then
+                    Console.WriteLine(errorMessage)
+                End If
+
+            Next
+            Console.WriteLine(Q)
+            Console.WriteLine("Enter q to quit")
+            Dim confirmation = Console.ReadLine().Trim()
+            If confirmation.ToLower()(0) = "q" Then
+                Exit While
             End If
-
-        Next
-        Console.WriteLine(Q)
+        End While
 
 
 
@@ -134,7 +146,45 @@ Module Program
             Return Data(FrontPointer)
         End Function
         Public Overrides Function ToString() As String
-            Return "[" + String.Join(",", Data.Take(_len)) + "]"
+            Dim arrowlenfp = Data.Take(FrontPointer).Sum(Function(x) x.ToString().Length)
+            Dim arrowlenrp = Data.Take(RearPointer).Sum(Function(x) x.ToString().Length)
+            Dim q As New StringBuilder()
+            Dim arrow = ""
+            For i = 0 To arrowlenfp + FrontPointer + 1
+                arrow += "-"
+                '        
+            Next
+            arrow += "v"
+            q.AppendLine("front pointer")
+            q.AppendLine(arrow)
+            Dim s = "["
+            Dim j = 0
+            For Each item As T In Data
+
+                Dim str = "_"
+                If item IsNot Nothing Then
+                    str = item.ToString()
+                End If
+                If str.Length = 0 Then
+                    s += "_"
+                Else
+                    s += str
+                End If
+                If j <> Data.Length - 1 Then
+                    s += ","
+                End If
+                j += 1
+            Next
+            s += "]"
+            q.AppendLine(s)
+            arrow = ""
+            For k = 0 To arrowlenrp + RearPointer
+                arrow += "-"
+            Next
+            arrow += "^"
+            q.AppendLine(arrow)
+            q.AppendLine("rear pointer")
+            Return q.ToString()
         End Function
     End Class
 End Module
