@@ -6,6 +6,8 @@ Module Program
         Enque
         Deque
         Reset
+        LinearSearch
+        BinarySearch
         Err
 
     End Enum
@@ -20,10 +22,28 @@ Module Program
             Case "R"
             Case "r"
                 Return Operation.Reset
+            Case "L"
+            Case "l"
+                Return Operation.LinearSearch
+            Case "B"
+            Case "b"
+                Return Operation.BinarySearch
+
 
         End Select
         Return Operation.Err
     End Function
+    Sub StupidSort(Of T As IComparable)(ByRef Data As T(), start As Integer, _end As Integer)
+        For i = start + 1 To _end - 1
+            Dim item = Data(i)
+            Dim p = i - 1
+            While Data(p).CompareTo(item) < 0 And p > 0
+                Data(p + 1) = Data(p)
+                p -= 1
+            End While
+            Data(p) = item
+        Next
+    End Sub
     Structure Command
         Dim c As Char
         Dim op As Operation
@@ -31,7 +51,7 @@ Module Program
         Public Sub New(s As String)
             s = s.Trim()
             op = CharacterToOp(s(0))
-            If op = Operation.Enque Then
+            If op <> Operation.Deque And op <> Operation.Err Then
                 args = s.Substring(s.IndexOf(" ")).Trim().Split(" ")
             End If
             c = s(0)
@@ -45,19 +65,12 @@ Module Program
                         For Each arg As String In args
                             q.Enqueue(arg)
                         Next
-
-
-
                     Case Operation.Deque
 
                         q.Dequeue()
 
-
-
-
                     Case Operation.Reset
-                        Console.WriteLine("Enter the new capacity of the queue")
-                        Dim cap = Integer.Parse(Console.ReadLine())
+                        Dim cap = Integer.Parse(args(0))
                         q = New Queue(Of String)(cap)
                     Case Operation.Err
 
@@ -73,13 +86,17 @@ Module Program
     End Structure
     Dim InstructionDescriptions As String() = {
         "[D]equeue  - Remove an item from the queue",
+        "              USAGE: d",
         "[E]nqueue  - Add an item to the queue",
-        "[R]eset    - Empty the queue and enter the maximum capacaity"
+        "              USAGE: e <args> where <args> are a space delimeted list of items",
+        "[R]eset    - Empty the queue and enter the maximum capacaity",
+        "              USAGE: r <n> where n is the new capacity of the new queue "
     }
     Sub Main()
         Dim Q As New Queue(Of String)
 
-        Console.WriteLine("Enter a comma seperated list of instructions from the list e.g E 4, D, E 3 2 3 11 1 Hello, R")
+
+        Console.WriteLine("Enter a comma seperated list of instructions from the list")
         Console.WriteLine("Press Enter or q to quit")
         For Each instruction As String In InstructionDescriptions
             Console.WriteLine(instruction)
