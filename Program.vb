@@ -76,6 +76,20 @@ Module Program
                     Case Operation.Err
 
                         Return $"Unknown command in input '{c}'"
+                    Case Operation.LinearSearch
+                        Dim searchItem = args(0)
+                        Dim min = Math.Min(q.FrontPointer, q.RearPointer)
+                        min = Math.Max(0, min)
+
+                        Dim max = Math.Max(q.FrontPointer, q.RearPointer)
+                        For i = min To max
+                            If q.Data(i) = searchItem Then
+                                Console.WriteLine($"Index {i} Contains {searchItem}")
+                                Return ""
+                            End If
+                        Next
+                        Console.WriteLine("Could not find item")
+
 
                 End Select
             Catch e As Exception
@@ -86,19 +100,20 @@ Module Program
         End Function
     End Structure
     Dim InstructionDescriptions As String() = {
-        "[D]equeue  - Remove an item from the queue",
-        "              USAGE: d",
-        "[E]nqueue  - Add an item to the queue",
-        "              USAGE: e <args> where <args> are a space delimeted list of items",
-        "[R]eset    - Empty the queue and enter the maximum capacaity",
-        "              USAGE: r <n> where n is the new capacity of the new queue "
+        "[D]equeue       - Remove an item from the queue",
+        "                    USAGE: d",
+        "[E]nqueue       - Add an item to the queue",
+        "                    USAGE: e <args> where <args> are a space delimeted list of items",
+        "[R]eset         - Empty the queue and enter the maximum capacaity",
+        "                    USAGE: r <n> where n is the new capacity of the new queue ",
+        "[L]inear Search - Linearly search for an element and print the index",
+        "                    USAGE: l <item> where item is the item to search for in the queue",
+        "[B]inary Search - Use binary search to search for an element and print the index",
+        "                    USAGE: b <item> where item is the item to search for in the queue"
     }
     Sub Main()
         Dim Q As New Queue(Of String)
-        Dim xs As Integer() = {5, 4, 3, 2, 1}
 
-        StupidSort(xs, 0, xs.Length)
-        Console.WriteLine(String.Join(",", xs))
 
         Console.WriteLine("Enter a comma seperated list of instructions from the list")
         Console.WriteLine("Press Enter or q to quit")
@@ -141,15 +156,15 @@ Module Program
             Return _cap
         End Function
 
-        Private Property FrontPointer = -1
-        Private Property RearPointer = -1
+        Public Property FrontPointer As Integer = -1
+        Public Property RearPointer As Integer = -1
         Private _len = 0
 
         Public Function GetLength() As Integer
             Return _len
         End Function
 
-        Private Data(_cap - 1) As T
+        Public Data(_cap - 1) As T
         Public Sub New()
 
         End Sub
@@ -202,6 +217,7 @@ Module Program
                 If j <> Data.Length - 1 Then
                     s += ","
                 End If
+
                 j += 1
             Next
             s += "]"
