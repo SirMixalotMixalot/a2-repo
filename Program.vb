@@ -37,11 +37,12 @@ Module Program
         For i = start + 1 To _end - 1
             Dim item = Data(i)
             Dim p = i - 1
-            While Data(p).CompareTo(item) < 0 And p > 0
+
+            While p >= 0 AndAlso item.CompareTo(Data(p)) < 0
                 Data(p + 1) = Data(p)
                 p -= 1
             End While
-            Data(p) = item
+            Data(p + 1) = item
         Next
     End Sub
     Structure Command
@@ -94,7 +95,10 @@ Module Program
     }
     Sub Main()
         Dim Q As New Queue(Of String)
+        Dim xs As Integer() = {5, 4, 3, 2, 1}
 
+        StupidSort(xs, 0, xs.Length)
+        Console.WriteLine(String.Join(",", xs))
 
         Console.WriteLine("Enter a comma seperated list of instructions from the list")
         Console.WriteLine("Press Enter or q to quit")
