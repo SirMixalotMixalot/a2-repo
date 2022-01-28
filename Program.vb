@@ -33,7 +33,7 @@ Module Program
         End Select
         Return Operation.Err
     End Function
-    Sub StupidSort(Of T As IComparable)(ByRef Data As T(), start As Integer, _end As Integer)
+    Sub StupidSort(Of T As IComparable)(ByRef Data() As T, start As Integer, _end As Integer)
         For i = start + 1 To _end - 1
             Dim item = Data(i)
             Dim p = i - 1
@@ -89,6 +89,32 @@ Module Program
                             End If
                         Next
                         Console.WriteLine("Could not find item")
+                    Case Operation.BinarySearch
+                        Dim min = Math.Min(q.FrontPointer, q.RearPointer)
+                        min = Math.Max(0, min)
+
+                        Dim max = Math.Max(q.FrontPointer, q.RearPointer)
+
+                        StupidSort(q.Data, min, max + 1)
+                        Dim start = min + 1
+                        Dim _end = max + 1
+                        Dim mid = (start + _end) >> 1
+                        While start <> _end And q.Data(mid) <> args(0)
+                            If args(0) > q.Data(mid) Then
+                                start = mid + 1
+                            Else
+                                _end = mid - 1
+                            End If
+                            mid = (start + _end) >> 1
+                        End While
+
+                        If q.Data(mid) = args(0) Then
+                            Console.WriteLine($"Found {args(0)} at index {mid}")
+                        Else
+                            Console.WriteLine($"{args(0)} does not exist in queue")
+                        End If
+
+
 
 
                 End Select
@@ -109,7 +135,8 @@ Module Program
         "[L]inear Search - Linearly search for an element and print the index",
         "                    USAGE: l <item> where item is the item to search for in the queue",
         "[B]inary Search - Use binary search to search for an element and print the index",
-        "                    USAGE: b <item> where item is the item to search for in the queue"
+        "                    USAGE: b <item> where item is the item to search for in the queue",
+        "                    WARNING: This operation messes with the queue!"
     }
     Sub Main()
         Dim Q As New Queue(Of String)
