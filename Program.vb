@@ -125,7 +125,10 @@ Module Program
 
         End Function
     End Structure
-    Dim InstructionDescriptions As String() = {
+
+
+
+    Dim QueueInstructionDescriptions As String() = {
         "[D]equeue       - Remove an item from the queue",
         "                    USAGE: d",
         "[E]nqueue       - Add an item to the queue",
@@ -138,13 +141,13 @@ Module Program
         "                    USAGE: b <item> where item is the item to search for in the queue",
         "                    WARNING: This operation messes with the queue!"
     }
-    Sub Main()
+    Sub QueueExec()
         Dim Q As New Queue(Of String)
 
 
         Console.WriteLine("Enter a comma seperated list of instructions from the list")
         Console.WriteLine("Press Enter or q to quit")
-        For Each instruction As String In InstructionDescriptions
+        For Each instruction As String In QueueInstructionDescriptions
             Console.WriteLine(instruction)
         Next
         While True
@@ -167,13 +170,10 @@ Module Program
 
             Console.WriteLine(Q)
 
-
-
         End While
-
-
-
-
+    End Sub
+    Sub Main()
+        QueueExec()
     End Sub
 
     Public Class Queue(Of T)
@@ -259,4 +259,5 @@ Module Program
             Return q.ToString()
         End Function
     End Class
+
 End Module
