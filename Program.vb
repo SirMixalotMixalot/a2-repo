@@ -8,7 +8,23 @@ Module Program
 
 
     Sub Main()
-        QueueExec()
+        For Each menu As String In MainMenu
+            Console.WriteLine(menu)
+        Next
+        Console.WriteLine("Enter exit to quit")
+        Dim response = Console.ReadLine().ToLower()
+        While response(0) <> "e"
+            Select Case response(0)
+                Case "q"
+                    QueueExec()
+            End Select
+            For Each menu As String In MainMenu
+                Console.WriteLine(menu)
+            Next
+            Console.WriteLine("Enter exit to quit")
+            response = Console.ReadLine().ToLower()
+
+        End While
     End Sub
 
 

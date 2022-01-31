@@ -1,6 +1,6 @@
 ﻿Imports System.Text
 Friend Module QueueModule
-    Dim InstructionDescriptions As String() = {
+    Private InstructionDescriptions As String() = {
         "[D]equeue       - Remove an item from the queue",
         "                    USAGE: d",
         "[E]nqueue       - Add an item to the queue",
@@ -18,13 +18,13 @@ Friend Module QueueModule
 
 
         Console.WriteLine("Enter a comma seperated list of instructions from the list")
-        Console.WriteLine("Press Enter or q to quit")
+        Console.WriteLine("Press Enter or '.exit' to exit")
         For Each instruction As String In InstructionDescriptions
             Console.WriteLine(instruction)
         Next
         While True
             Dim instructions = Console.ReadLine()
-            If String.IsNullOrEmpty(instructions) Or instructions(0) = "q" Then
+            If String.IsNullOrEmpty(instructions) Or instructions(0) = "." Then
                 Exit While
             End If
             Dim instructionList = instructions.Split(",")
@@ -44,7 +44,7 @@ Friend Module QueueModule
 
         End While
     End Sub
-    Enum Operation
+    Private Enum Operation
         Enque
         Deque
         Reset
@@ -53,7 +53,7 @@ Friend Module QueueModule
         Err
 
     End Enum
-    Function CharacterToOp(c As Char) As Operation
+    Private Function CharacterToOp(c As Char) As Operation
         Select Case c
             Case "E"
             Case "e"
@@ -75,19 +75,8 @@ Friend Module QueueModule
         End Select
         Return Operation.Err
     End Function
-    Sub InsertionSort(Of T As IComparable)(ByRef Data() As T, start As Integer, _end As Integer)
-        For i = start + 1 To _end - 1
-            Dim item = Data(i)
-            Dim p = i - 1
 
-            While p >= 0 AndAlso item.CompareTo(Data(p)) < 0
-                Data(p + 1) = Data(p)
-                p -= 1
-            End While
-            Data(p + 1) = item
-        Next
-    End Sub
-    Structure Command
+    Private Structure Command
         Dim c As Char
         Dim op As Operation
         Dim args As String()
@@ -95,7 +84,13 @@ Friend Module QueueModule
             s = s.Trim()
             op = CharacterToOp(s(0))
             If op <> Operation.Deque And op <> Operation.Err Then
-                args = s.Substring(s.IndexOf(" ")).Trim().Split(" ")
+                Dim index = s.IndexOf(" ")
+                If index > 0 Then
+                    args = s.Substring(index).Trim().Split(" ")
+                Else
+                    op = Operation.Err
+                End If
+
             End If
             c = s(0)
 
@@ -117,7 +112,7 @@ Friend Module QueueModule
                         q = New Queue(Of String)(cap)
                     Case Operation.Err
 
-                        Return $"Unknown command in input '{c}'"
+                        Return $"Unknown command in input '{c}' or improper arguments supplied"
                     Case Operation.LinearSearch
                         Dim searchItem = args(0)
                         Dim min = Math.Min(q.FrontPointer, q.RearPointer)
