@@ -33,7 +33,7 @@ Module Program
         End Select
         Return Operation.Err
     End Function
-    Sub StupidSort(Of T As IComparable)(ByRef Data() As T, start As Integer, _end As Integer)
+    Sub InsertionSort(Of T As IComparable)(ByRef Data() As T, start As Integer, _end As Integer)
         For i = start + 1 To _end - 1
             Dim item = Data(i)
             Dim p = i - 1
@@ -91,16 +91,14 @@ Module Program
                         Console.WriteLine("Could not find item")
                     Case Operation.BinarySearch
                         Dim min = Math.Min(q.FrontPointer, q.RearPointer)
-                        min = Math.Max(0, min)
-
                         Dim max = Math.Max(q.FrontPointer, q.RearPointer)
-
-                        StupidSort(q.Data, min, max + 1)
+                        Dim searchItem = args(0)
+                        InsertionSort(q.Data, min, max + 1)
                         Dim start = min + 1
                         Dim _end = max + 1
                         Dim mid = (start + _end) >> 1
-                        While start <> _end And q.Data(mid) <> args(0)
-                            If args(0) > q.Data(mid) Then
+                        While start <> _end AndAlso q.Data(mid) <> searchItem
+                            If searchItem > q.Data(mid) Then
                                 start = mid + 1
                             Else
                                 _end = mid - 1
@@ -108,10 +106,10 @@ Module Program
                             mid = (start + _end) >> 1
                         End While
 
-                        If q.Data(mid) = args(0) Then
-                            Console.WriteLine($"Found {args(0)} at index {mid}")
+                        If q.Data(mid) = searchItem Then
+                            Console.WriteLine($"Found {searchItem} at index {mid}")
                         Else
-                            Console.WriteLine($"{args(0)} does not exist in queue")
+                            Console.WriteLine($"{searchItem} does not exist in queue")
                         End If
 
 
@@ -232,15 +230,13 @@ Module Program
             Dim j = 0
             For Each item As T In Data
 
-                Dim str = "_"
-                If item IsNot Nothing Then
-                    str = item.ToString()
-                End If
-                If str.Length = 0 Then
+
+                If item Is Nothing Then
                     s += "_"
                 Else
-                    s += str
+                    s += item.ToString()
                 End If
+
                 If j <> Data.Length - 1 Then
                     s += ","
                 End If
