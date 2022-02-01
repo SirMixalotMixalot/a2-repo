@@ -1,4 +1,5 @@
-﻿Module StackModule
+﻿Imports System.Text
+Module StackModule
     Public Class Stack(Of T)
         Private ReadOnly _cap = 10
         Public Data(_cap - 1) As T
@@ -27,6 +28,35 @@
             Length -= 1
             Return Data(_sp)
 
+        End Function
+        Public Overrides Function ToString() As String
+            Dim arrowLength = Data.Take(_sp).Sum(Function(x) x.ToString().Length)
+            Dim stack As New StringBuilder()
+            Dim arrow = ""
+            For i = 0 To arrowLength + _sp
+                arrow += "-"
+            Next
+            arrow += "v"
+            stack.AppendLine($"Stack Pointer is [{_sp}]")
+            stack.AppendLine(arrow)
+            Dim s = "["
+            Dim j = 0
+            For Each item As T In Data
+                If item Is Nothing Then
+                    s += "_"
+                Else
+                    s += item.ToString()
+                End If
+
+                If j <> Data.Length - 1 Then
+                    s += ","
+                End If
+
+                j += 1
+            Next
+            s += "]"
+            stack.AppendLine(s)
+            Return stack.ToString()
         End Function
     End Class
     Function wordToOperation(word As String) As Operation
@@ -90,14 +120,23 @@
     }
 
     Public Sub StackExec()
-        Dim stack As Stack(Of String)
+        Dim stack As New Stack(Of String)
         Preamble(instructionDescriptions)
         While True
             Dim instructionLine = Console.ReadLine()
             If String.IsNullOrWhiteSpace(instructionLine) Or instructionLine(0) = "." Then
                 Exit While
             End If
-            Dim instructionList = instructionLine.Split(",").Select(Function(s) New Command(s.Trim()))
+            Dim commands = instructionLine.Split(",").Select(Function(s) New Command(s.Trim()))
+            For Each command As Command In commands
+                Dim errorMessage = command.Exec(stack)
+                If errorMessage <> "" Then
+                    Console.ForegroundColor = ConsoleColor.DarkRed
+                    Console.WriteLine(errorMessage)
+                    Console.ResetColor()
+                End If
+                Console.WriteLine(stack)
+            Next
 
 
 
