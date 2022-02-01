@@ -11,9 +11,9 @@ Module Program
         For Each menu As String In MainMenu
             Console.WriteLine(menu)
         Next
-        Console.WriteLine("Enter exit to quit")
+        Console.WriteLine("Enter .exit to quit")
         Dim response = Console.ReadLine().ToLower()
-        While response(0) <> "e"
+        While response(0) <> "."
             Select Case response(0)
                 Case "q"
                     QueueExec()
