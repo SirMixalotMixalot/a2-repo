@@ -17,11 +17,13 @@ Module Program
             Select Case response(0)
                 Case "q"
                     QueueExec()
+                Case "s"
+                    StackExec()
             End Select
             For Each menu As String In MainMenu
                 Console.WriteLine(menu)
             Next
-            Console.WriteLine("Enter exit to quit")
+            Console.WriteLine("Enter .exit to quit")
             response = Console.ReadLine().ToLower()
 
         End While
