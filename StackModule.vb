@@ -34,17 +34,55 @@
         Select Case c
             Case "P"
             Case "p"
+                If word(1) = "u" Or word(1) = "U" Then
+                    Return Operation.Push
+                Else
+                    Return Operation.Pop
+                End If
 
         End Select
+        Return Operation.Err
     End Function
     Enum Operation
         Push
         Pop
+        Err
     End Enum
     Class Command
         Dim word As String
         Dim op As Operation
         Dim args As String()
+        Public Sub New(s As String)
+            Dim index = s.IndexOf(" ")
+            word = s
+            If index < 0 Then
+                op = wordToOperation(s)
+            Else
+                word = s.Substring(0, index)
+                op = wordToOperation(word)
+            End If
+            If op <> Operation.Pop AndAlso op <> Operation.Err Then
+                args = s.Substring(index).Trim().Split(" ")
+            End If
+
+        End Sub
+        Public Function Exec(ByRef stack As Stack(Of String)) As String
+            Try
+                Select Case op
+                    Case Operation.Pop
+                        stack.Pop()
+                    Case Operation.Push
+                        For Each arg As String In args
+                            stack.Push(arg)
+                        Next
+                    Case Operation.Err
+                        Return $"{word} is not a valid operation"
+                End Select
+            Catch e As Exception
+                Return e.Message
+            End Try
+            Return ""
+        End Function
     End Class
     Dim instructionDescriptions As String() = {
         "[Pu]sh",
@@ -53,8 +91,17 @@
 
     Public Sub StackExec()
         Dim stack As Stack(Of String)
-        Console.WriteLine("Enter a comma seperated list of instructions from the list")
-        Console.WriteLine("Press Enter or '.exit' to exit")
+        Preamble(instructionDescriptions)
+        While True
+            Dim instructionLine = Console.ReadLine()
+            If String.IsNullOrWhiteSpace(instructionLine) Or instructionLine(0) = "." Then
+                Exit While
+            End If
+            Dim instructionList = instructionLine.Split(",").Select(Function(s) New Command(s.Trim()))
+
+
+
+        End While
 
 
 
