@@ -29,4 +29,34 @@
 
         End Function
     End Class
+    Function wordToOperation(word As String) As Operation
+        Dim c As Char = word(0)
+        Select Case c
+            Case "P"
+            Case "p"
+
+        End Select
+    End Function
+    Enum Operation
+        Push
+        Pop
+    End Enum
+    Class Command
+        Dim word As String
+        Dim op As Operation
+        Dim args As String()
+    End Class
+    Dim instructionDescriptions As String() = {
+        "[Pu]sh",
+        "[Po]p"
+    }
+
+    Public Sub StackExec()
+        Dim stack As Stack(Of String)
+        Console.WriteLine("Enter a comma seperated list of instructions from the list")
+        Console.WriteLine("Press Enter or '.exit' to exit")
+
+
+
+    End Sub
 End Module

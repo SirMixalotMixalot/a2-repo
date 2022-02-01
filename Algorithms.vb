@@ -11,4 +11,12 @@
             Data(p + 1) = item
         Next
     End Sub
+    Sub Preamble(InstructionDescriptions As String())
+        Console.WriteLine("Enter a comma seperated list of instructions from the list")
+        Console.WriteLine("Press Enter or '.exit' to exit")
+        For Each instruction As String In InstructionDescriptions
+            Console.WriteLine(instruction)
+        Next
+
+    End Sub
 End Module

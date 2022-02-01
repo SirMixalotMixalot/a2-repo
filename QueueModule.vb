@@ -17,11 +17,7 @@ Friend Module QueueModule
         Dim Q As New Queue(Of String)
 
 
-        Console.WriteLine("Enter a comma seperated list of instructions from the list")
-        Console.WriteLine("Press Enter or '.exit' to exit")
-        For Each instruction As String In InstructionDescriptions
-            Console.WriteLine(instruction)
-        Next
+        Preamble(InstructionDescriptions)
         While True
             Dim instructions = Console.ReadLine()
             If String.IsNullOrEmpty(instructions) Or instructions(0) = "." Then
