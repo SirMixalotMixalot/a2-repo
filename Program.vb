@@ -2,8 +2,9 @@
 
 Module Program
     Dim MainMenu As String() = {
-        "[Q]ueue - Operate a queue and get a visual representation of your actions",
-        "[S]tack - Operate a stack and get a visual representation of your actions"
+        "[Q]ueue       - Operate a queue and get a visual representation of your actions",
+        "[S]tack       - Operate a stack and get a visual representation of your actions",
+        "[L]inked List - Operate a linked list and get a visual representation of your actions"
     }
 
 
