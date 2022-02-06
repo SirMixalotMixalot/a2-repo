@@ -1,4 +1,29 @@
 ﻿Module LinkedListModule
+    Public Sub TestLinkedList()
+        Dim link As New LinkedList(Of Integer)
+
+        For i = 0 To 10
+            link.Add(i)
+        Next
+        Console.WriteLine(link)
+
+        link.InsertAfter(2, 20)
+        Console.WriteLine(link)
+
+        link.RemoveAt(5)
+
+        Console.WriteLine(link)
+
+        link.Delete(3)
+
+        Console.WriteLine(link)
+
+        Dim f = link.Contains(3)
+        If f Then
+            Console.WriteLine("You mucked up contains or delete")
+        End If
+        Console.WriteLine(link)
+    End Sub
     Class Node(Of T)
         'Public n As Node(Of T) = Nothing
         Public _next As Integer = -1
@@ -12,10 +37,13 @@
             data = item
             _next = -1
         End Sub
+        Public Overrides Function ToString() As String
+            Return $"|{data}| -> {_next}"
+        End Function
     End Class
     Class LinkedList(Of T As IComparable)
         Dim head As Integer = -1
-        Dim heap As Integer = -1
+        Dim heap As Integer = 0
         Dim free As Integer = -1
         Dim _cap As Integer = 10
         Dim length As Integer = 0
@@ -26,16 +54,20 @@
             _cap = newSize
         End Sub
         ''' <summary>
-        ''' Add item to the front of the list
+        ''' Add <paramref name="item"/> to the front of the list [O(1) procedure]
         ''' </summary>
         ''' <param name="item"></param>
         Sub Add(item As T)
+            If length = _cap Then
+                Resize(_cap * 2)
+            End If
+            length += 1
             Dim node = New Node(Of T)(item)
             If head = -1 Then
                 Data(0) = node
                 head = 0
                 heap = 1
-                length = 1
+
                 Return
             End If
 
@@ -46,5 +78,88 @@
 
 
         End Sub
+        Public Function Contains(item As T) As Boolean
+            Dim link = head
+            While link < _cap AndAlso link > -1 AndAlso Not Data(link).data.Equals(item)
+                link = Data(link)._next
+            End While
+            Return link < _cap AndAlso link > -1
+        End Function
+        Public Sub Delete(item As T)
+            If length = 0 Then
+                Throw New Exception("Linked list empty")
+            End If
+            length -= 1
+            Dim link = head
+            Dim previousLink = link
+            Dim i = 0
+            While link < _cap AndAlso link > -1 AndAlso Not Data(link).data.Equals(item)
+                previousLink = link
+                link = Data(link)._next
+                i += 1
+            End While
+
+            If link >= _cap Then
+                Return 'Item not even in linked list
+            End If
+
+            Data(previousLink)._next = Data(link)._next
+            free = link
+            Data(free)._next = previousLink
+
+
+        End Sub
+        Public Sub RemoveAt(index As Integer)
+            If length = 0 Then
+                Throw New Exception("Linked list empty")
+            End If
+            length -= 1
+            Dim previousFree = free
+            If index = 0 Then
+
+                free = head
+                head = Data(head)._next
+                Data(free)._next = previousFree
+
+            End If
+            Dim i As Integer = 0
+            Dim link = head
+            While i <> index - 1
+                link = Data(link)._next
+                i += 1
+            End While
+
+            free = Data(i)._next
+            Data(i)._next = Data(free)._next
+            Data(free)._next = previousFree
+
+
+        End Sub
+        Public Sub InsertAfter(index As Integer, item As T)
+            If length >= _cap Then
+                Resize(_cap * 2)
+            End If
+            length += 1
+            Dim node As New Node(Of T)(item)
+            If index = 0 Then
+                Add(item)
+                Return
+            End If
+            Dim i As Integer = 0
+            Dim link = head
+            While i <> index
+                link = Data(link)._next
+                i += 1
+            End While
+            node._next = Data(link)._next
+            Data(link)._next = heap
+            Data(heap) = node
+            heap += 1
+
+
+        End Sub
+        Public Overrides Function ToString() As String
+            Return $"Head: {head}, Heap: {heap}, Length: {length}, Data: {String.Join(",", Data.Select(Function(x) x?.ToString))}"
+        End Function
     End Class
 End Module

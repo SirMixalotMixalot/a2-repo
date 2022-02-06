@@ -20,6 +20,8 @@ Module Program
                     QueueExec()
                 Case "s"
                     StackExec()
+                Case "l"
+                    TestLinkedList()
             End Select
             For Each menu As String In MainMenu
                 Console.WriteLine(menu)
