@@ -102,10 +102,10 @@
             If link >= _cap Then
                 Return 'Item not even in linked list
             End If
-
+            Dim previousFree = free
             Data(previousLink)._next = Data(link)._next
             free = link
-            Data(free)._next = previousLink
+            Data(free)._next = previousFree
 
 
         End Sub
@@ -129,8 +129,8 @@
                 i += 1
             End While
 
-            free = Data(i)._next
-            Data(i)._next = Data(free)._next
+            free = Data(link)._next
+            Data(link)._next = Data(free)._next
             Data(free)._next = previousFree
 
 
