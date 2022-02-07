@@ -8,20 +8,24 @@
         Console.WriteLine(link)
 
         link.InsertAfter(2, 20)
+        Console.WriteLine("Inserted 20 after second item in list")
         Console.WriteLine(link)
 
         link.RemoveAt(5)
-
+        Console.WriteLine("Removed the 5th item in the list")
         Console.WriteLine(link)
 
         link.Delete(3)
-
+        Console.WriteLine("Deleted the node with a value of 3")
         Console.WriteLine(link)
+        Console.WriteLine("Checking if 3 is in linked list")
 
-        Dim f = link.Contains(3)
-        If f Then
+        If link.Contains(3) Then
             Console.WriteLine("You mucked up contains or delete")
+        Else
+            Console.WriteLine("3 is not in the linked list")
         End If
+
         Console.WriteLine(link)
     End Sub
     Class Node(Of T)
@@ -59,7 +63,7 @@
         ''' <param name="item"></param>
         Sub Add(item As T)
             If length = _cap Then
-                Resize(_cap * 2)
+                Resize((_cap * 2) - 1)
             End If
             length += 1
             Dim node = New Node(Of T)(item)
@@ -137,7 +141,7 @@
         End Sub
         Public Sub InsertAfter(index As Integer, item As T)
             If length >= _cap Then
-                Resize(_cap * 2)
+                Resize((_cap * 2) - 1)
             End If
             length += 1
             Dim node As New Node(Of T)(item)
@@ -159,7 +163,18 @@
 
         End Sub
         Public Overrides Function ToString() As String
-            Return $"Head: {head}, Heap: {heap}, Length: {length}, Data: {String.Join(",", Data.Select(Function(x) x?.ToString))}"
+            Dim info = $"Head: {head}, Heap: {heap}, Length: {length}"
+            Dim ss As New System.Text.StringBuilder()
+            ss.AppendLine(info)
+            Dim i = 0
+            For Each datum In Data
+                If datum Is Nothing Then
+                    Continue For
+                End If
+                ss.AppendLine(datum.ToString & $"     [{i}]")
+                i += 1
+            Next
+            Return ss.ToString()
         End Function
     End Class
 End Module
