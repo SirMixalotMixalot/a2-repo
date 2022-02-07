@@ -167,13 +167,12 @@
             Dim ss As New System.Text.StringBuilder()
             ss.AppendLine(info)
             Dim i = 0
-            For Each datum In Data
-                If datum Is Nothing Then
-                    Continue For
-                End If
-                ss.AppendLine(datum.ToString & $"     [{i}]")
+            Dim link = head
+            While Data(link)._next >= 0
+                ss.AppendLine(Data(link).ToString & $"[{i}]")
                 i += 1
-            Next
+                link = Data(link)._next
+            End While
             Return ss.ToString()
         End Function
     End Class
