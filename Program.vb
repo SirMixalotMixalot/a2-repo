@@ -21,7 +21,7 @@ Module Program
                 Case "s"
                     StackExec()
                 Case "l"
-                    TestLinkedList()
+                    LinkExec()
             End Select
             For Each menu As String In MainMenu
                 Console.WriteLine(menu)

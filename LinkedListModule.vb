@@ -1,4 +1,38 @@
 ﻿Module LinkedListModule
+    Private instructionDescriptions As String() = {
+        "[A]dd    - Adds an item to the front of the list",
+        "         - SYNTAX: Add <item> [index] (Index is optional)",
+        "[R]emove - Removes an item from the list",
+        "         - SYNTAX: Remove <item>",
+        "[D]elete - Deletes a node at the specified index",
+        "         - SYNTAX: Delete <index>"
+    }
+    Private Enum Operation
+        Add
+        Remove
+        Delete
+    End Enum
+    'Imagine if there was meta programming in visual basic
+    Private Function charToOperation(c As Char)
+        Select Case c
+            Case "a"
+            Case "A"
+                Return Operation.Add
+            Case "d"
+            Case "D"
+                Return Operation.Delete
+            Case "r"
+            Case "R"
+                Return Operation.Remove
+        End Select
+    End Function
+    Public Sub LinkExec()
+        Preamble(instructionDescriptions)
+        Dim list As New LinkedList(Of String)
+
+
+    End Sub
+
     Public Sub TestLinkedList()
         Dim link As New LinkedList(Of Integer)
 
