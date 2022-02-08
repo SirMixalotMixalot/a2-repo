@@ -60,6 +60,8 @@
         Console.WriteLine("Deleted the node with a value of 3")
         Console.WriteLine(link)
         Console.WriteLine("Checking if 3 is in linked list")
+        link.Add(10)
+        link.InsertAfter(4, 15)
 
         If link.Contains(3) Then
             Console.WriteLine("You mucked up contains or delete")
@@ -115,7 +117,10 @@
 
                 Return
             End If
-
+            If free <> -1 Then
+                AddAfterToFree(node, -1)
+                Return
+            End If
             node._next = head
             Data(heap) = node
             head = heap
@@ -151,6 +156,24 @@
             Data(previousLink)._next = Data(link)._next
             free = link
             Data(free)._next = previousFree
+
+
+        End Sub
+        Private Sub AddAfterToFree(node As Node(Of T), before As Integer)
+            Dim location = free
+
+            If before >= 0 Then
+                Dim after = Data(before)._next
+                Data(before)._next = location
+                node._next = after
+            Else
+                node._next = head
+                head = location
+            End If
+            free = Data(free)._next
+            Data(location) = node
+
+
 
 
         End Sub
@@ -196,6 +219,10 @@
                 link = Data(link)._next
                 i += 1
             End While
+            If free <> -1 Then
+                AddAfterToFree(node, link)
+                Return
+            End If
             node._next = Data(link)._next
             Data(link)._next = heap
             Data(heap) = node
