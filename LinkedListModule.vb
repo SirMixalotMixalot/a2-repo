@@ -42,7 +42,7 @@
             _next = -1
         End Sub
         Public Overrides Function ToString() As String
-            Return $"|{data}| -> {_next}"
+            Return $"|{data}|{_next}-|"
         End Function
     End Class
     Class LinkedList(Of T As IComparable)
@@ -168,8 +168,18 @@
             ss.AppendLine(info)
             Dim i = 0
             Dim link = head
-            While Data(link)._next >= 0
-                ss.AppendLine(Data(link).ToString & $"[{i}]")
+            While link >= 0
+                Dim str = Data(link).ToString
+                If i <> length - 1 Then
+                    str &= "--"
+                End If
+                ss.AppendLine(str)
+                If i <> length - 1 Then
+                    Dim padding = New String(" ", str.Length - 1)
+                    ss.AppendLine(padding & " |")
+                    ss.AppendLine(" v" & New String("-", str.Length - 2))
+                End If
+
                 i += 1
                 link = Data(link)._next
             End While
