@@ -1,5 +1,5 @@
 ﻿Module LinkedListModule
-    Private instructionDescriptions As String() = {
+    Private ReadOnly instructionDescriptions As String() = {
         "[A]dd    - Adds an item to the front of the list",
         "         - SYNTAX: Add <item> [index] (Index is optional)",
         "[R]emove - Removes an item from the list",
@@ -44,7 +44,7 @@
         Dim link As New LinkedList(Of Integer)
 
         For i = 0 To 10
-            link.Add(i)
+            link.Push(i)
         Next
         Console.WriteLine(link)
 
@@ -60,7 +60,7 @@
         Console.WriteLine("Deleted the node with a value of 3")
         Console.WriteLine(link)
         Console.WriteLine("Checking if 3 is in linked list")
-        link.Add(10)
+        link.Push(10)
         link.InsertAfter(4, 15)
 
         If link.Contains(3) Then
@@ -104,7 +104,7 @@
         ''' Add <paramref name="item"/> to the front of the list [O(1) procedure]
         ''' </summary>
         ''' <param name="item"></param>
-        Sub Add(item As T)
+        Sub Push(item As T)
             If length = _cap Then
                 Resize((_cap * 2) - 1)
             End If
@@ -210,7 +210,7 @@
             length += 1
             Dim node As New Node(Of T)(item)
             If index = 0 Then
-                Add(item)
+                Push(item)
                 Return
             End If
             Dim i As Integer = 0
