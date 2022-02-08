@@ -59,7 +59,7 @@ Module StackModule
             Return stack.ToString()
         End Function
     End Class
-    Function wordToOperation(word As String) As Operation
+    Private Function wordToOperation(word As String) As Operation
         Dim c As Char = word(0)
         Select Case c
             Case "P"

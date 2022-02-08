@@ -1,7 +1,7 @@
 ﻿Module LinkedListModule
     Private ReadOnly instructionDescriptions As String() = {
         "[A]dd    - Adds an item to the front of the list",
-        "         - SYNTAX: Add <item> [index] (Index is optional)",
+        "         - SYNTAX: Add <item> [index] (Index is optional and must be last)",
         "[R]emove - Removes an item from the list",
         "         - SYNTAX: Remove <item>",
         "[D]elete - Deletes a node at the specified index",
@@ -14,7 +14,7 @@
         Err
     End Enum
     'Imagine if there was meta programming in visual basic
-    Private Function charToOperation(c As Char)
+    Private Function charToOperation(c As Char) As Operation
         Select Case c
             Case "a"
             Case "A"
@@ -30,8 +30,44 @@
     End Function
     Private Class Command
         Dim op As Operation
-        Dim c As Char
+        Dim word As String
         Dim args As String()
+        Public Sub New(s As String)
+            Dim index = s.IndexOf(" ")
+            word = s
+            Dim c = s(0)
+            If index < 0 Then
+                op = Operation.Err
+                Return
+            End If
+            op = charToOperation(c)
+            If op <> Operation.Err Then
+                args = s.Substring(index).Trim().Split(" ")
+            End If
+        End Sub
+        Public Function Exec(l As LinkedList(Of String)) As String
+            Try
+                Select Case op
+                    Case Operation.Add
+                        Dim maybeIndex = args.Last
+                        Dim index = -1
+
+                        If Integer.TryParse(maybeIndex, index) Then
+                            For Each arg In args.Take(args.Length - 1)
+                                l.InsertAfter(index, arg)
+                            Next
+                        Else
+                            For Each arg In args
+                                l.Push(arg)
+                            Next
+                        End If
+
+                End Select
+            Catch ex As Exception
+                Return ex.Message
+            End Try
+            Return ""
+        End Function
     End Class
     Public Sub LinkExec()
         Preamble(instructionDescriptions)
@@ -100,14 +136,17 @@
             ReDim Preserve Data(newSize)
             _cap = newSize
         End Sub
+        Sub CheckIfNeedResize()
+            If length = _cap Then
+                Resize((_cap * 2) - 1)
+            End If
+        End Sub
         ''' <summary>
         ''' Add <paramref name="item"/> to the front of the list [O(1) procedure]
         ''' </summary>
         ''' <param name="item"></param>
         Sub Push(item As T)
-            If length = _cap Then
-                Resize((_cap * 2) - 1)
-            End If
+            CheckIfNeedResize()
             length += 1
             Dim node = New Node(Of T)(item)
             If head = -1 Then
@@ -128,9 +167,12 @@
 
 
         End Sub
+        Private Function IsValidLink(link As Integer) As Boolean
+            Return link < _cap AndAlso link >= 0
+        End Function
         Public Function Contains(item As T) As Boolean
             Dim link = head
-            While link < _cap AndAlso link > -1 AndAlso Not Data(link).data.Equals(item)
+            While IsValidLink(link) AndAlso Not Data(link).data.Equals(item)
                 link = Data(link)._next
             End While
             Return link < _cap AndAlso link > -1
@@ -143,7 +185,7 @@
             Dim link = head
             Dim previousLink = link
             Dim i = 0
-            While link < _cap AndAlso link > -1 AndAlso Not Data(link).data.Equals(item)
+            While IsValidLink(link) AndAlso Not Data(link).data.Equals(item)
                 previousLink = link
                 link = Data(link)._next
                 i += 1
@@ -181,6 +223,9 @@
             If length = 0 Then
                 Throw New Exception("Linked list empty")
             End If
+            If index >= length Then
+                Throw New Exception("Invalid index")
+            End If
             length -= 1
             Dim previousFree = free
             If index = 0 Then
@@ -204,15 +249,12 @@
 
         End Sub
         Public Sub InsertAfter(index As Integer, item As T)
-            If length >= _cap Then
-                Resize((_cap * 2) - 1)
+            CheckIfNeedResize()
+            If index >= length Then
+                Throw New Exception("Invalid index")
             End If
             length += 1
             Dim node As New Node(Of T)(item)
-            If index = 0 Then
-                Push(item)
-                Return
-            End If
             Dim i As Integer = 0
             Dim link = head
             While i <> index
@@ -232,11 +274,11 @@
         End Sub
         Public Overrides Function ToString() As String
             Dim info = $"Head: {head}, Heap: {heap}, Length: {length}"
-            Dim ss As New System.Text.StringBuilder()
+            Dim ss As New Text.StringBuilder()
             ss.AppendLine(info)
             Dim i = 0
             Dim link = head
-            While link >= 0
+            While IsValidLink(link)
                 Dim str = Data(link).ToString
                 If i <> length - 1 Then
                     str &= "--"
