@@ -11,6 +11,7 @@
         Add
         Remove
         Delete
+        Err
     End Enum
     'Imagine if there was meta programming in visual basic
     Private Function charToOperation(c As Char)
@@ -25,7 +26,13 @@
             Case "R"
                 Return Operation.Remove
         End Select
+        Return Operation.Err
     End Function
+    Private Class Command
+        Dim op As Operation
+        Dim c As Char
+        Dim args As String()
+    End Class
     Public Sub LinkExec()
         Preamble(instructionDescriptions)
         Dim list As New LinkedList(Of String)
