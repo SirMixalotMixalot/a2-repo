@@ -121,6 +121,8 @@
             _next = -1
         End Sub
         Public Overrides Function ToString() As String
+            Dim sb As New Text.StringBuilder()
+
             Return $"|{data}|{_next}-|"
         End Function
     End Class
