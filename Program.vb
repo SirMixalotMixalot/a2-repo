@@ -4,7 +4,8 @@ Module Program
     Dim MainMenu As String() = {
         "[Q]ueue       - Operate a queue and get a visual representation of your actions",
         "[S]tack       - Operate a stack and get a visual representation of your actions",
-        "[L]inked List - Operate a linked list and get a visual representation of your actions"
+        "[L]inked List - Operate a linked list and get a visual representation of your actions",
+        "[T]ree        - Operate a binary tree"
     }
 
 
@@ -22,6 +23,13 @@ Module Program
                     StackExec()
                 Case "l"
                     TestLinkedList()
+                Case "t"
+                    Dim tree As New Tree(Of Integer)(4)
+                    Dim rand As New Random()
+                    For i = 0 To 8
+                        tree.Add(rand.Next(20))
+                    Next
+                    Console.WriteLine(String.Join(",", tree.InOrderTraversal()))
             End Select
             For Each menu As String In MainMenu
                 Console.WriteLine(menu)
