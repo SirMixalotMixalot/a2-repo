@@ -2,11 +2,18 @@
     Class Tree(Of T As IComparable)
         Dim left As Tree(Of T) = Nothing
         Dim right As Tree(Of T) = Nothing
-        Dim data As T
+        Dim data As T = Nothing
         Sub New(item As T)
             data = item
         End Sub
+        Sub New()
+
+        End Sub
         Public Sub Add(item As T)
+            If data Is Nothing Then
+                data = item
+                Return
+            End If
             If data.CompareTo(item) < 0 Then 'data < item or item > data
                 If right IsNot Nothing Then
                     right.Add(item)
@@ -32,6 +39,19 @@
                 list.AddRange(right.InOrderTraversal())
             End If
             Return list
+        End Function
+        Iterator Function PostOrderTraversal() As IEnumerable(Of T)
+            If left IsNot Nothing Then
+                For Each x In left.PostOrderTraversal
+                    Yield x
+                Next
+            End If
+            If right IsNot Nothing Then
+                For Each x In right.PostOrderTraversal
+                    Yield x
+                Next
+            End If
+            Yield data
         End Function
     End Class
 End Module
