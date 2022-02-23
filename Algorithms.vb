@@ -4,7 +4,7 @@
             Dim item = Data(i)
             Dim p = i - 1
 
-            While p >= 0 AndAlso item.CompareTo(Data(p)) < 0
+            While p >= 0 AndAlso item.CompareTo(Data(p)) < 0 ' item < Data(p)
                 Data(p + 1) = Data(p)
                 p -= 1
             End While

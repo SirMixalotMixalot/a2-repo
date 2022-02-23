@@ -51,7 +51,6 @@
                     Case Operation.Add
                         Dim maybeIndex = args.Last
                         Dim index = -1
-
                         If Integer.TryParse(maybeIndex, index) Then
                             For Each arg In args.Take(args.Length - 1)
                                 l.InsertAfter(index, arg)
@@ -61,6 +60,14 @@
                                 l.Push(arg)
                             Next
                         End If
+                    Case Operation.Delete
+                        Dim index As Integer
+                        If Not Integer.TryParse(args(0), index) Then
+                            Return "No you dummy, that's not a valid index"
+                        End If
+                        l.RemoveAt(index)
+                    Case Operation.Remove
+                        l.Delete(args(0))
 
                 End Select
             Catch ex As Exception
