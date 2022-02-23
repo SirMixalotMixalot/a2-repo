@@ -15,7 +15,7 @@ Module Program
         Next
         Console.WriteLine("Enter .exit to quit")
         Dim response = Console.ReadLine().ToLower()
-        While response(0) <> "."
+        While response.Length > 0 AndAlso response(0) <> "."
             Select Case response(0)
                 Case "q"
                     QueueExec()
@@ -24,12 +24,12 @@ Module Program
                 Case "l"
                     TestLinkedList()
                 Case "t"
-                    Dim tree As New Tree(Of Integer)(4)
+                    Dim tree As New Tree(Of Integer)()
                     Dim rand As New Random()
-                    For i = 0 To 8
+                    For i = 0 To 9
                         tree.Add(rand.Next(20))
                     Next
-                    Console.WriteLine(String.Join(",", tree.InOrderTraversal()))
+                    Console.WriteLine(String.Join(",", tree.PostOrderTraversal()))
             End Select
             For Each menu As String In MainMenu
                 Console.WriteLine(menu)
